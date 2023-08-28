@@ -1,4 +1,4 @@
-package com.softlond.store.dominio.dto.comandos;
+package com.softlond.store.dominio.dto;
 
 public class CategoriaDTO {
     private String nombre;

@@ -1,8 +1,7 @@
 package com.softlond.store.controlador;
 
-import com.softlond.store.dominio.dto.comandos.ClienteDTO;
+import com.softlond.store.dominio.dto.ClienteDTO;
 import com.softlond.store.dominio.excepciones.ClienteNoExistenteException;
-import com.softlond.store.repositorio.entidades.ClienteDAO;
 import com.softlond.store.dominio.servicios.ServicioCliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

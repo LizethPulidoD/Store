@@ -1,8 +1,8 @@
 package com.softlond.store.dominio.servicios;
 
-import com.softlond.store.dominio.dto.comandos.CategoriaActualizarDTO;
-import com.softlond.store.dominio.dto.comandos.CategoriaConsultaDTO;
-import com.softlond.store.dominio.dto.comandos.CategoriaDTO;
+import com.softlond.store.dominio.dto.CategoriaActualizarDTO;
+import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
+import com.softlond.store.dominio.dto.CategoriaDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.repositorio.RepositorioCategoria;
 import com.softlond.store.repositorio.entidades.CategoriaDAO;

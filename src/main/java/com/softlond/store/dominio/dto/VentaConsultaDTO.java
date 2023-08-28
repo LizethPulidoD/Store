@@ -1,19 +1,22 @@
 package com.softlond.store.dominio.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VentaConsultaDTO {
 
     private Long idVenta;
     private int cedulaCliente;
-    private Date fecha;
+    private LocalDate fecha;
     private List<ProductoVentaConsultaDTO> productos;
+
 
     public VentaConsultaDTO() {
     }
 
-    public VentaConsultaDTO(Long idVenta, int cedulaCliente, Date fecha, List<ProductoVentaConsultaDTO> productos) {
+    public VentaConsultaDTO(Long idVenta, int cedulaCliente, LocalDate fecha, List<ProductoVentaConsultaDTO> productos) {
         this.idVenta = idVenta;
         this.cedulaCliente = cedulaCliente;
         this.fecha = fecha;
@@ -36,9 +39,10 @@ public class VentaConsultaDTO {
         this.cedulaCliente = cedulaCliente;
     }
 
-    public Date getFecha() {
+    public LocalDate getFecha() {
         return fecha;
     }
+
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
@@ -50,4 +54,5 @@ public class VentaConsultaDTO {
     public void setProductos(List<ProductoVentaConsultaDTO> productos) {
         this.productos = productos;
     }
+
 }

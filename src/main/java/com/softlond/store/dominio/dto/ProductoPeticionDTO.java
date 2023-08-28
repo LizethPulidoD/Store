@@ -1,4 +1,4 @@
-package com.softlond.store.dominio.dto.comandos;
+package com.softlond.store.dominio.dto;
 
 public class ProductoPeticionDTO {
     private Long idCategoria;

@@ -1,6 +1,6 @@
 package com.softlond.store.repositorio.mappers;
 
-import com.softlond.store.dominio.dto.comandos.ClienteDTO;
+import com.softlond.store.dominio.dto.ClienteDTO;
 import com.softlond.store.repositorio.entidades.ClienteDAO;
 
 import java.util.List;

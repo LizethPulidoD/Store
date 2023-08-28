@@ -1,7 +1,7 @@
 package com.softlond.store.controlador;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
-import com.softlond.store.dominio.dto.comandos.ProductoPeticionDTO;
+import com.softlond.store.dominio.dto.ProductoPeticionDTO;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.dominio.servicios.ServicioProducto;

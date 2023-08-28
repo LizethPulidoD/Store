@@ -2,14 +2,13 @@ package com.softlond.store.controlador;
 
 import com.softlond.store.dominio.dto.VentaConsultaDTO;
 import com.softlond.store.dominio.dto.VentaPeticionDTO;
-import com.softlond.store.repositorio.entidades.VentaDAO;
 import com.softlond.store.dominio.excepciones.ClienteNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.dominio.servicios.ServicioVenta;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,7 +21,7 @@ public class ControladorVenta {
     }
 
     @GetMapping("/")
-    public List<VentaDAO> mostrarVentas() {
+    public List<VentaConsultaDTO> mostrarVentas() {
         return servicioVenta.mostrarVentas();
     }
 
@@ -32,14 +31,14 @@ public class ControladorVenta {
     }
 
     @GetMapping
-    public List<VentaConsultaDTO> mostrarVentasPorFecha(@RequestParam("fecha") @DateTimeFormat(pattern = "dd/MM/yyyy") Date fecha) {
+    public List<VentaConsultaDTO> mostrarVentasPorFecha(@RequestParam("fecha") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fecha) {
         return servicioVenta.mostrarVentasPorFecha(fecha);
     }
 
     @GetMapping("/fechaCliente")
     public List<VentaConsultaDTO> mostrarVentasPorRangoDeFechaYCliente(@RequestParam("idCliente") int id,
-                                                                       @RequestParam("fechaInicio")  @DateTimeFormat(pattern = "dd/MM/yyyy") Date fechaInicio,
-                                                                       @RequestParam("fechaFin")  @DateTimeFormat(pattern = "dd/MM/yyyy") Date fechaFin) {
+                                                                       @RequestParam("fechaInicio")  @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaInicio,
+                                                                       @RequestParam("fechaFin")  @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate fechaFin) {
         return servicioVenta.obtenerVentasPorRangoDeFechaYCliente(fechaInicio,fechaFin, id);
     }
 
@@ -51,11 +50,6 @@ public class ControladorVenta {
         } catch (ClienteNoExistenteException | ProductoNoExistenteException e) {
             return e.getMessage();
         }
-    }
-
-    @PutMapping
-    public void actualizarVenta(@RequestBody VentaDAO ventaDAO) {
-        this.servicioVenta.actualizarVenta(ventaDAO);
     }
 
     @DeleteMapping(path = "{idVenta}")

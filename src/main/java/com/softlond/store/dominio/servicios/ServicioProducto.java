@@ -1,8 +1,8 @@
 package com.softlond.store.dominio.servicios;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
-import com.softlond.store.dominio.dto.comandos.CategoriaConsultaDTO;
-import com.softlond.store.dominio.dto.comandos.ProductoPeticionDTO;
+import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
+import com.softlond.store.dominio.dto.ProductoPeticionDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.repositorio.RepositorioProducto;

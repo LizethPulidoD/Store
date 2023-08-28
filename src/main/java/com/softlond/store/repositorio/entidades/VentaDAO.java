@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "venta")
@@ -23,14 +24,17 @@ public class VentaDAO {
     @OneToMany(mappedBy = "productoDAO")
     private List<ProductoVentaDAO> ventasProductos = new ArrayList<>();
 
+    private double total;
+
     public VentaDAO() {
     }
 
-    public VentaDAO(Long idVenta, ClienteDAO clienteDAO, Date fecha, List<ProductoVentaDAO> ventasProductos) {
+    public VentaDAO(Long idVenta, ClienteDAO clienteDAO, Date fecha, List<ProductoVentaDAO> ventasProductos, double total) {
         this.idVenta = idVenta;
         this.clienteDAO = clienteDAO;
         this.fecha = fecha;
         this.ventasProductos = ventasProductos;
+        this.total = total;
     }
 
     public VentaDAO(Long idVenta, ClienteDAO clienteDAO, Date fecha) {
@@ -77,6 +81,14 @@ public class VentaDAO {
 
     public void setCliente(ClienteDAO clienteDAO) {
         this.clienteDAO = clienteDAO;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 
 }

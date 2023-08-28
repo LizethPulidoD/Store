@@ -1,8 +1,7 @@
 package com.softlond.store.dominio.servicios;
 
-import com.softlond.store.dominio.dto.comandos.ClienteDTO;
+import com.softlond.store.dominio.dto.ClienteDTO;
 import com.softlond.store.dominio.excepciones.ClienteNoExistenteException;
-import com.softlond.store.repositorio.entidades.CategoriaDAO;
 import com.softlond.store.repositorio.entidades.ClienteDAO;
 import com.softlond.store.repositorio.RepositorioCliente;
 import com.softlond.store.repositorio.mappers.ClienteMapper;

@@ -32,17 +32,20 @@ public class ServicioVenta {
     private final ServicioVentasProducto servicioVentasProducto;
     private final VentaMapper ventaMapper;
 
+    private final ServicioDescuento servicioDescuento;
+
     @Autowired
-    public ServicioVenta(RepositorioVenta repositorioVenta, RepositorioProducto repositorioProducto, RepositorioCliente repositorioCliente, ServicioVentasProducto servicioVentasProducto) {
+    public ServicioVenta(RepositorioVenta repositorioVenta, RepositorioProducto repositorioProducto, RepositorioCliente repositorioCliente, ServicioVentasProducto servicioVentasProducto, ServicioDescuento servicioDescuento) {
         this.repositorioVenta = repositorioVenta;
         this.repositorioProducto = repositorioProducto;
         this.repositorioCliente = repositorioCliente;
         this.servicioVentasProducto = servicioVentasProducto;
+        this.servicioDescuento = servicioDescuento;
         this.ventaMapper = new VentaMapper();
     }
 
-    public List<VentaDAO> mostrarVentas() {
-        return (List<VentaDAO>) repositorioVenta.findAll();
+    public List<VentaConsultaDTO> mostrarVentas() {
+        return  ventaMapper.transformarListaDeVentasADTOParaConsulta((List<VentaDAO>) repositorioVenta.findAll());
     }
 
     public List<VentaConsultaDTO> mostrarVentasPorCliente(Long idCliente) {
@@ -66,6 +69,20 @@ public class ServicioVenta {
         ventaDAO.setFecha(ventaPeticionDTO.getFecha());
         VentaDAO ventaDAOGuardada = this.repositorioVenta.save(ventaDAO);
         guardarProductosEnLaVenta(productos, ventaDAOGuardada);
+        calcularTotal(productos);
+    }
+
+    private void calcularTotal(Map<Long, ProductoDAO> productos) {
+        Double total = productos.entrySet() .stream()
+                .map(productoVenta ->
+                        productoVenta.getKey()*productoVenta.getValue().getPrecio())
+                .collect(Collectors.summarizingDouble(Double::doubleValue))
+                .getSum();
+        servicioDescuento
+    }
+    private double calcularTotalEnVentasLosUltimos30Dias(Date fechaActual){
+        Date fechaInicio = fechaActual.
+        this.obtenerVentasPorRangoDeFechaYCliente()
     }
 
     @Transactional(rollbackFor = Exception.class) // Método para guardar productos transaccionalmente
@@ -80,6 +97,7 @@ public class ServicioVenta {
                     productoVentaDAO.setVenta(ventaDAOGuardada);
                     return productoVentaDAO;
                 }).collect(Collectors.toList()));
+
     }
 
     private Map<Long, ProductoDAO> obtenerProductos(VentaPeticionDTO ventaPeticionDTO) throws ProductoNoExistenteException {
@@ -103,10 +121,6 @@ public class ServicioVenta {
         } else {
             return cliente.get();
         }
-    }
-
-    public void actualizarVenta(VentaDAO ventaDAO) {
-        this.repositorioVenta.save(ventaDAO);
     }
 
     public void eliminarVenta(Long idVenta) {
