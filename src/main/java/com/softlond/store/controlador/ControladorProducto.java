@@ -2,8 +2,8 @@ package com.softlond.store.controlador;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
 import com.softlond.store.dominio.dto.ProductoPeticionDTO;
-import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
+import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.dominio.servicios.ServicioProducto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

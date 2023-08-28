@@ -1,13 +1,20 @@
 package com.softlond.store.dominio.dto;
 
 public class CategoriaDTO {
+    private Long id;
     private String nombre;
 
-    public CategoriaDTO(String nombre) {
+    public CategoriaDTO(Long id, String nombre) {
+        this.id = id;
         this.nombre = nombre;
     }
 
-    public CategoriaDTO() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {

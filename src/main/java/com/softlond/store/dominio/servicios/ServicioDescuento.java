@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Service
 public class ServicioDescuento {
+    private final Double COMPRA_MINIMA = 1000000d;
     private final RepositorioDescuento repositorioDescuento;
     private final ServicioVenta servicioVenta;
     private final DescuentoMapper descuentoMapper;
@@ -22,11 +23,11 @@ public class ServicioDescuento {
         this.descuentoMapper = new DescuentoMapper();
     }
 
-    public DescuentoDTO obtenerDescuento(Long id) throws DescuentoNoExistenteException {
-        Optional<DescuentoDAO> descuento = this.repositorioDescuento.findById(id);
-        if(descuento.isPresent()){
+    public DescuentoDTO obtenerDescuento() throws DescuentoNoExistenteException {
+        Optional<DescuentoDAO> descuento = this.repositorioDescuento.findById(1L);
+        if (descuento.isPresent()) {
             return descuentoMapper.transformarADTO(descuento.get());
-        }else{
+        } else {
             throw new DescuentoNoExistenteException();
         }
     }
@@ -47,7 +48,11 @@ public class ServicioDescuento {
         this.repositorioDescuento.save(descuentoExistente);
     }
 
-    public double obtenerDescuentoDeCliente(Double totalEnVentas){
-
+    public double obtenerDescuentoDeCliente(Double totalEnVentas) throws DescuentoNoExistenteException {
+        if (totalEnVentas >= COMPRA_MINIMA) {
+            return obtenerDescuento().getPorcentajeDescuento();
+        } else {
+            return 0;
+        }
     }
 }

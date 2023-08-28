@@ -18,7 +18,7 @@ public class VentaMapper {
         VentaConsultaDTO ventaConsultaDTO = new VentaConsultaDTO();
         ventaConsultaDTO.setIdVenta(ventaDAO.getIdVenta());
         ventaConsultaDTO.setCedulaCliente(ventaDAO.getCliente().getCedula());
-        ventaConsultaDTO.setFecha(ventaDAO.getFecha());
+        ventaConsultaDTO.setFecha(ventaDAO.getFecha().toLocalDate());
         ventaConsultaDTO.setProductos(productoVentaMapper.transformarListaProductoVentaAListaProductoVentaConsultaDTO(ventaDAO.getVentasProductos()));
         return ventaConsultaDTO;
     }

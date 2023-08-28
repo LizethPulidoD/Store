@@ -1,7 +1,7 @@
 package com.softlond.store.dominio.servicios;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
-import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
+import com.softlond.store.dominio.dto.CategoriaDTO;
 import com.softlond.store.dominio.dto.ProductoPeticionDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
@@ -35,7 +35,7 @@ public class ServicioProducto {
     }
 
     public void crearProducto(ProductoPeticionDTO consultaProductoDTO) throws CategoriaNoExistenteException {
-        Optional<CategoriaConsultaDTO> categoriaDTO = this.servicioCategoria.consultarCategoriaPorId(consultaProductoDTO.getIdCategoria());
+        Optional<CategoriaDTO> categoriaDTO = this.servicioCategoria.consultarCategoriaPorId(consultaProductoDTO.getIdCategoria());
         if (categoriaDTO.isPresent()) {
             ProductoDAO productoDAO = productoMapper.transformarADAO(consultaProductoDTO, categoriaDTO.get());
             repositorioProducto.save(productoDAO);
@@ -47,7 +47,7 @@ public class ServicioProducto {
     public void actualizarProducto(ProductoPeticionDTO productoDTO) throws ProductoNoExistenteException, CategoriaNoExistenteException {
         Optional<ProductoDAO> producto = this.repositorioProducto.consultarProductoPorNombre(productoDTO.getNombre());
         if (producto.isPresent()) {
-            Optional<CategoriaConsultaDTO> categoriaDTO = this.servicioCategoria.consultarCategoriaPorId(productoDTO.getIdCategoria());
+            Optional<CategoriaDTO> categoriaDTO = this.servicioCategoria.consultarCategoriaPorId(productoDTO.getIdCategoria());
             if (categoriaDTO.isPresent()) {
                 producto.get().setNombre(productoDTO.getNombre());
                 producto.get().setPrecio(productoDTO.getPrecio());

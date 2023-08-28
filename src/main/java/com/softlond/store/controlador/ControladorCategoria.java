@@ -1,8 +1,8 @@
 package com.softlond.store.controlador;
 
 import com.softlond.store.dominio.dto.CategoriaActualizarDTO;
-import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
 import com.softlond.store.dominio.dto.CategoriaDTO;
+import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.dominio.servicios.ServicioCategoria;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +21,12 @@ public class ControladorCategoria {
     }
 
     @GetMapping
-    public List<CategoriaDTO> mostrarCategorias() {
+    public List<CategoriaConsultaDTO> mostrarCategorias() {
         return this.servicioCategoria.mostrarCategorias();
     }
 
     @PostMapping
-    public void crearCategoria(@RequestBody CategoriaConsultaDTO categoriaDTO) {
+    public void crearCategoria(@RequestBody CategoriaDTO categoriaDTO) {
         this.servicioCategoria.crearCategoria(categoriaDTO);
     }
 

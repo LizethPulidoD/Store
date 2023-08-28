@@ -4,23 +4,27 @@ package com.softlond.store.dominio.servicios;
 import com.softlond.store.dominio.dto.ProductoVentaPeticionDTO;
 import com.softlond.store.dominio.dto.VentaConsultaDTO;
 import com.softlond.store.dominio.dto.VentaPeticionDTO;
-import com.softlond.store.repositorio.entidades.ProductoVentaDAO;
-import com.softlond.store.repositorio.entidades.ClienteDAO;
-import com.softlond.store.repositorio.entidades.ProductoDAO;
-import com.softlond.store.repositorio.entidades.VentaDAO;
 import com.softlond.store.dominio.excepciones.ClienteNoExistenteException;
+import com.softlond.store.dominio.excepciones.DescuentoNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
-import com.softlond.store.repositorio.RepositorioCliente;
 import com.softlond.store.repositorio.RepositorioProducto;
 import com.softlond.store.repositorio.RepositorioVenta;
+import com.softlond.store.repositorio.entidades.ClienteDAO;
+import com.softlond.store.repositorio.entidades.ProductoDAO;
+import com.softlond.store.repositorio.entidades.ProductoVentaDAO;
+import com.softlond.store.repositorio.entidades.VentaDAO;
+import com.softlond.store.repositorio.mappers.ClienteMapper;
 import com.softlond.store.repositorio.mappers.VentaMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import java.util.*;
-
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,65 +32,66 @@ import java.util.stream.Collectors;
 public class ServicioVenta {
     private final RepositorioVenta repositorioVenta;
     private final RepositorioProducto repositorioProducto;
-    private final RepositorioCliente repositorioCliente;
+    private final ServicioCliente servicioCliente;
     private final ServicioVentasProducto servicioVentasProducto;
+    private final ServicioTotalizador servicioTotalizador;
     private final VentaMapper ventaMapper;
+    private final ClienteMapper clienteMapper;
 
-    private final ServicioDescuento servicioDescuento;
 
     @Autowired
-    public ServicioVenta(RepositorioVenta repositorioVenta, RepositorioProducto repositorioProducto, RepositorioCliente repositorioCliente, ServicioVentasProducto servicioVentasProducto, ServicioDescuento servicioDescuento) {
+    public ServicioVenta(RepositorioVenta repositorioVenta, RepositorioProducto repositorioProducto, ServicioCliente servicioCliente, ServicioVentasProducto servicioVentasProducto, ServicioTotalizador servicioTotalizador) {
         this.repositorioVenta = repositorioVenta;
         this.repositorioProducto = repositorioProducto;
-        this.repositorioCliente = repositorioCliente;
+        this.servicioCliente = servicioCliente;
         this.servicioVentasProducto = servicioVentasProducto;
-        this.servicioDescuento = servicioDescuento;
+        this.servicioTotalizador = servicioTotalizador;
         this.ventaMapper = new VentaMapper();
+        this.clienteMapper = new ClienteMapper();
     }
 
     public List<VentaConsultaDTO> mostrarVentas() {
-        return  ventaMapper.transformarListaDeVentasADTOParaConsulta((List<VentaDAO>) repositorioVenta.findAll());
+        return ventaMapper.transformarListaDeVentasADTOParaConsulta((List<VentaDAO>) repositorioVenta.findAll());
     }
 
     public List<VentaConsultaDTO> mostrarVentasPorCliente(Long idCliente) {
         return ventaMapper.transformarListaDeVentasADTOParaConsulta(repositorioVenta.obtenerVentasPorCliente(idCliente));
     }
 
-    public List<VentaConsultaDTO> mostrarVentasPorFecha(Date fecha) {
-        return ventaMapper.transformarListaDeVentasADTOParaConsulta(repositorioVenta.obtenerVentasPorFecha(fecha));
+    public List<VentaConsultaDTO> mostrarVentasPorFecha(LocalDate fecha) {
+        return ventaMapper.transformarListaDeVentasADTOParaConsulta(repositorioVenta.obtenerVentasPorFecha(Date.valueOf(fecha)));
     }
 
-    public List<VentaConsultaDTO> obtenerVentasPorRangoDeFechaYCliente(Date fechaInicio, Date fechaFin, int idCliente) {
-        return ventaMapper.transformarListaDeVentasADTOParaConsulta(repositorioVenta.obtenerVentasPorRangoDeFechaYCliente(fechaInicio,fechaFin, idCliente));
+    public List<VentaConsultaDTO> obtenerVentasPorRangoDeFechaYCliente(LocalDate fechaInicio, LocalDate fechaFin, int idCliente) {
+        return ventaMapper.transformarListaDeVentasADTOParaConsulta(repositorioVenta
+                .obtenerVentasPorRangoDeFechaYCliente(Date.valueOf(fechaInicio), Date.valueOf(fechaFin), idCliente));
+    }
+
+    private List<VentaConsultaDTO> obtenerVentasDeLosUltimos30Dias(VentaPeticionDTO ventaPeticionDTO) {
+        return obtenerVentasPorRangoDeFechaYCliente(
+                ventaPeticionDTO.getFecha().minusMonths(1),
+                ventaPeticionDTO.getFecha(),
+                ventaPeticionDTO.getCedulaCliente());
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    public void crearVenta(VentaPeticionDTO ventaPeticionDTO) throws ClienteNoExistenteException, ProductoNoExistenteException, DescuentoNoExistenteException {
+        ClienteDAO clienteDAO = clienteMapper.transformarADAO(servicioCliente.consultarClientePorCedula(ventaPeticionDTO.getCedulaCliente()));
+        Map<Long, ProductoDAO> productos = obtenerProductos(ventaPeticionDTO);
+        VentaDAO ventaDAO = this.repositorioVenta.save(new VentaDAO(clienteDAO,ventaPeticionDTO.getFecha()));
+        guardarProductosEnLaVenta(productos, ventaDAO);
+        actualizarTotal(ventaPeticionDTO, productos, ventaDAO);
+    }
+
+    private void actualizarTotal(VentaPeticionDTO ventaPeticionDTO, Map<Long, ProductoDAO> productos, VentaDAO ventaDAOGuardada) throws DescuentoNoExistenteException {
+        double total = servicioTotalizador.calcularTotal(productos, ventaPeticionDTO, obtenerVentasDeLosUltimos30Dias(ventaPeticionDTO));
+        ventaDAOGuardada.setTotal(total);
+        this.repositorioVenta.save(ventaDAOGuardada);
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void crearVenta(VentaPeticionDTO ventaPeticionDTO) throws ClienteNoExistenteException, ProductoNoExistenteException {
-        ClienteDAO clienteDAO = obtenerCliente(ventaPeticionDTO);
-        Map<Long, ProductoDAO> productos = obtenerProductos(ventaPeticionDTO);
-        VentaDAO ventaDAO = new VentaDAO();
-        ventaDAO.setCliente(clienteDAO);
-        ventaDAO.setFecha(ventaPeticionDTO.getFecha());
-        VentaDAO ventaDAOGuardada = this.repositorioVenta.save(ventaDAO);
-        guardarProductosEnLaVenta(productos, ventaDAOGuardada);
-        calcularTotal(productos);
-    }
-
-    private void calcularTotal(Map<Long, ProductoDAO> productos) {
-        Double total = productos.entrySet() .stream()
-                .map(productoVenta ->
-                        productoVenta.getKey()*productoVenta.getValue().getPrecio())
-                .collect(Collectors.summarizingDouble(Double::doubleValue))
-                .getSum();
-        servicioDescuento
-    }
-    private double calcularTotalEnVentasLosUltimos30Dias(Date fechaActual){
-        Date fechaInicio = fechaActual.
-        this.obtenerVentasPorRangoDeFechaYCliente()
-    }
-
-    @Transactional(rollbackFor = Exception.class) // Método para guardar productos transaccionalmente
-    private void guardarProductosEnLaVenta(Map<Long, ProductoDAO> productos, VentaDAO ventaDAOGuardada) throws ProductoNoExistenteException {
+    private void guardarProductosEnLaVenta(Map<Long, ProductoDAO> productos, VentaDAO ventaDAOGuardada) {
         servicioVentasProducto.guardarVentasProducto(productos
                 .entrySet()
                 .stream()
@@ -102,7 +107,6 @@ public class ServicioVenta {
 
     private Map<Long, ProductoDAO> obtenerProductos(VentaPeticionDTO ventaPeticionDTO) throws ProductoNoExistenteException {
         Map<Long, ProductoDAO> listadoDeProductos = new HashMap<>();
-        // Verificar existencia de los productos
         for (ProductoVentaPeticionDTO productoDTO : ventaPeticionDTO.getProductos()) {
             Optional<ProductoDAO> producto = repositorioProducto.findById(productoDTO.getIdProducto());
             if (producto.isPresent()) {
@@ -112,15 +116,6 @@ public class ServicioVenta {
             }
         }
         return listadoDeProductos;
-    }
-
-    private ClienteDAO obtenerCliente(VentaPeticionDTO ventaPeticionDTO) throws ClienteNoExistenteException {
-        Optional<ClienteDAO> cliente = repositorioCliente.findById(ventaPeticionDTO.getCedulaCliente());
-        if (cliente.isEmpty()) {
-            throw new ClienteNoExistenteException();
-        } else {
-            return cliente.get();
-        }
     }
 
     public void eliminarVenta(Long idVenta) {

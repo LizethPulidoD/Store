@@ -1,7 +1,7 @@
 package com.softlond.store.repositorio.mappers;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
-import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
+import com.softlond.store.dominio.dto.CategoriaDTO;
 import com.softlond.store.dominio.dto.ProductoPeticionDTO;
 import com.softlond.store.repositorio.entidades.CategoriaDAO;
 import com.softlond.store.repositorio.entidades.ProductoDAO;
@@ -23,7 +23,7 @@ public class ProductoMapper {
         return productoDAO;
     }
 
-    public ProductoDAO transformarADAO(ProductoPeticionDTO productoDTO, CategoriaConsultaDTO categoriaDTO)  {
+    public ProductoDAO transformarADAO(ProductoPeticionDTO productoDTO, CategoriaDTO categoriaDTO)  {
         CategoriaDAO categoriaDAO = categoriaMapper.transformarConsultaADAO(categoriaDTO);
         ProductoDAO productoDAO = new ProductoDAO();
         productoDAO.setCategoria(categoriaDAO);

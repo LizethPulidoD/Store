@@ -22,12 +22,12 @@ public class ServicioCliente {
         this.clienteMapper = new ClienteMapper();
     }
 
-    public Optional<ClienteDTO> consultarClientePorCedula(int cedula){
+    public ClienteDTO consultarClientePorCedula(int cedula) throws ClienteNoExistenteException {
         Optional<ClienteDAO> clienteDAO = this.repositorioCliente.findById(cedula);
         if (clienteDAO.isPresent()) {
-            return Optional.of(clienteMapper.transformarClienteDAOADTO(clienteDAO.get()));
+            return clienteMapper.transformarClienteDAOADTO(clienteDAO.get());
         } else {
-            return Optional.empty();
+            throw new ClienteNoExistenteException();
         }
     }
     public List<ClienteDTO> mostrarClientes() {

@@ -3,6 +3,7 @@ package com.softlond.store.controlador;
 import com.softlond.store.dominio.dto.VentaConsultaDTO;
 import com.softlond.store.dominio.dto.VentaPeticionDTO;
 import com.softlond.store.dominio.excepciones.ClienteNoExistenteException;
+import com.softlond.store.dominio.excepciones.DescuentoNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
 import com.softlond.store.dominio.servicios.ServicioVenta;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -47,7 +48,7 @@ public class ControladorVenta {
         try {
             this.servicioVenta.crearVenta(venta);
             return "La venta fue creada exitosamente";
-        } catch (ClienteNoExistenteException | ProductoNoExistenteException e) {
+        } catch (ClienteNoExistenteException | ProductoNoExistenteException | DescuentoNoExistenteException e) {
             return e.getMessage();
         }
     }

@@ -3,10 +3,10 @@ package com.softlond.store.repositorio.entidades;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "venta")
@@ -19,6 +19,7 @@ public class VentaDAO {
     @JoinColumn(name = "cedula")
     private ClienteDAO clienteDAO;
     @JsonFormat(pattern = "dd/MM/yyyy", timezone = "America/Bogota")
+    @Temporal(TemporalType.DATE)
     private Date fecha;
 
     @OneToMany(mappedBy = "productoDAO")
@@ -41,6 +42,11 @@ public class VentaDAO {
         this.idVenta = idVenta;
         this.clienteDAO = clienteDAO;
         this.fecha = fecha;
+    }
+
+    public VentaDAO(ClienteDAO clienteDAO, LocalDate fecha) {
+        this.clienteDAO = clienteDAO;
+        this.setFecha(fecha);
     }
 
     public ClienteDAO getClienteDAO() {
@@ -89,6 +95,10 @@ public class VentaDAO {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public void setFecha(LocalDate date) {
+        this.fecha = java.sql.Date.valueOf(date);
     }
 
 }

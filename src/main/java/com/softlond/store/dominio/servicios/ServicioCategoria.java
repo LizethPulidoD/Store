@@ -1,8 +1,8 @@
 package com.softlond.store.dominio.servicios;
 
 import com.softlond.store.dominio.dto.CategoriaActualizarDTO;
-import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
 import com.softlond.store.dominio.dto.CategoriaDTO;
+import com.softlond.store.dominio.dto.CategoriaConsultaDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.repositorio.RepositorioCategoria;
 import com.softlond.store.repositorio.entidades.CategoriaDAO;
@@ -27,15 +27,15 @@ public class ServicioCategoria {
         this.categoriaMapper = new CategoriaMapper();
     }
 
-    public List<CategoriaDTO> mostrarCategorias() {
+    public List<CategoriaConsultaDTO> mostrarCategorias() {
         return categoriaMapper.transformarListaADTO((List<CategoriaDAO>) this.repositorioCategoria.findAll());
     }
 
-    public void crearCategoria(CategoriaConsultaDTO categoriaDTO) {
+    public void crearCategoria(CategoriaDTO categoriaDTO) {
         this.repositorioCategoria.save(categoriaMapper.transformarADAO(categoriaDTO));
     }
 
-    public Optional<CategoriaConsultaDTO> consultarCategoriaPorId(Long id) {
+    public Optional<CategoriaDTO> consultarCategoriaPorId(Long id) {
         Optional<CategoriaDAO> categoriaDAO = this.repositorioCategoria.findById(id);
         if (categoriaDAO.isPresent()) {
             return Optional.of(categoriaMapper.transformarConsultaADTO(categoriaDAO.get()));
