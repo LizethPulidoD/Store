@@ -1,11 +1,13 @@
 package com.softlond.store.dominio.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 public class VentaPeticionDTO {
     private int cedulaCliente;
+    @JsonFormat(pattern = "dd/MM/yyyy") // Especifica el formato de fecha
     private LocalDate fecha;
     private List<ProductoVentaPeticionDTO> productos;
 

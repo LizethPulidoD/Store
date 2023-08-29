@@ -9,10 +9,14 @@ import java.util.stream.Collectors;
 
 public class CategoriaMapper {
     public CategoriaDAO transformarADAO(CategoriaDTO categoriaDTO){
-        return new CategoriaDAO(categoriaDTO.getNombre());
+        return new CategoriaDAO(categoriaDTO.getId(),categoriaDTO.getNombre());
     }
 
-    public CategoriaConsultaDTO transformarADTO(CategoriaDAO categoriaDAO){
+    public CategoriaDTO transformarADTO(CategoriaDAO categoriaDAO){
+        return new CategoriaDTO(categoriaDAO.getId(), categoriaDAO.getNombre());
+    }
+
+    public CategoriaConsultaDTO transformarAConsultaDTO(CategoriaDAO categoriaDAO){
         return new CategoriaConsultaDTO(categoriaDAO.getNombre());
     }
 
@@ -26,6 +30,6 @@ public class CategoriaMapper {
 
 
     public List<CategoriaConsultaDTO> transformarListaADTO(List<CategoriaDAO> categoriasDAO){
-        return categoriasDAO.stream().map(this::transformarADTO).collect(Collectors.toList());
+        return categoriasDAO.stream().map(this::transformarAConsultaDTO).collect(Collectors.toList());
     }
 }

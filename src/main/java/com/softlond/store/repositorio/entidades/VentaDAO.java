@@ -3,9 +3,8 @@ package com.softlond.store.repositorio.entidades;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.*;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,14 +14,14 @@ public class VentaDAO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVenta;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "cedula")
     private ClienteDAO clienteDAO;
     @JsonFormat(pattern = "dd/MM/yyyy", timezone = "America/Bogota")
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @OneToMany(mappedBy = "productoDAO")
+    @OneToMany(mappedBy = "ventaDAO")
     private List<ProductoVentaDAO> ventasProductos = new ArrayList<>();
 
     private double total;
@@ -44,7 +43,7 @@ public class VentaDAO {
         this.fecha = fecha;
     }
 
-    public VentaDAO(ClienteDAO clienteDAO, LocalDate fecha) {
+    public VentaDAO(ClienteDAO clienteDAO, Date fecha) {
         this.clienteDAO = clienteDAO;
         this.setFecha(fecha);
     }
@@ -95,10 +94,6 @@ public class VentaDAO {
 
     public void setTotal(double total) {
         this.total = total;
-    }
-
-    public void setFecha(LocalDate date) {
-        this.fecha = java.sql.Date.valueOf(date);
     }
 
 }

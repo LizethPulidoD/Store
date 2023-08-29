@@ -2,6 +2,7 @@ package com.softlond.store.dominio.servicios;
 
 import com.softlond.store.dominio.dto.ProductoConsultaDTO;
 import com.softlond.store.dominio.dto.CategoriaDTO;
+import com.softlond.store.dominio.dto.ProductoDTO;
 import com.softlond.store.dominio.dto.ProductoPeticionDTO;
 import com.softlond.store.dominio.excepciones.CategoriaNoExistenteException;
 import com.softlond.store.dominio.excepciones.ProductoNoExistenteException;
@@ -31,7 +32,16 @@ public class ServicioProducto {
     }
 
     public List<ProductoConsultaDTO> mostrarProductos() {
-        return productoMapper.transformarListaADTO((List<ProductoDAO>) this.repositorioProducto.findAll());
+        return productoMapper.transformarListaAConsultaDTO((List<ProductoDAO>) this.repositorioProducto.findAll());
+    }
+
+    public ProductoDTO consultarPorID(Long id) throws ProductoNoExistenteException {
+        Optional<ProductoDAO> producto = repositorioProducto.findById(id);
+        if(producto.isPresent()){
+            return productoMapper.transformarADTO(producto.get());
+        }else{
+            throw new ProductoNoExistenteException(id);
+        }
     }
 
     public void crearProducto(ProductoPeticionDTO consultaProductoDTO) throws CategoriaNoExistenteException {

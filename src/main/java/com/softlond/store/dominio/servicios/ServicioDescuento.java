@@ -7,19 +7,16 @@ import com.softlond.store.repositorio.entidades.DescuentoDAO;
 import com.softlond.store.repositorio.mappers.DescuentoMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ServicioDescuento {
     private final Double COMPRA_MINIMA = 1000000d;
     private final RepositorioDescuento repositorioDescuento;
-    private final ServicioVenta servicioVenta;
     private final DescuentoMapper descuentoMapper;
 
-    public ServicioDescuento(RepositorioDescuento repositorioDescuento, ServicioVenta servicioVenta) {
+    public ServicioDescuento(RepositorioDescuento repositorioDescuento) {
         this.repositorioDescuento = repositorioDescuento;
-        this.servicioVenta = servicioVenta;
         this.descuentoMapper = new DescuentoMapper();
     }
 

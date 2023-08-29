@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface RepositorioVenta extends CrudRepository<VentaDAO, Long> {
-    @Query(value = "SELECT * FROM VENTA v WHERE v.cedula=:idcliente", nativeQuery = true)
+    @Query(value = "SELECT * FROM venta WHERE venta.cedula = :idcliente", nativeQuery = true)
     List<VentaDAO> obtenerVentasPorCliente(@Param("idcliente") Long idCliente);
 
     @Query(value = "SELECT * FROM VENTA WHERE VENTA.fecha = :fecha", nativeQuery = true)

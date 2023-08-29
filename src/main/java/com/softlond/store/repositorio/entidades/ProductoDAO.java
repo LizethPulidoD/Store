@@ -9,6 +9,7 @@ import java.util.List;
 public class ProductoDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_producto")
     private Long id;
 
     @ManyToOne
@@ -19,7 +20,7 @@ public class ProductoDAO {
     private String nombre;
     private Double precio;
 
-    @OneToMany(mappedBy = "ventaDAO")
+    @OneToMany(mappedBy = "productoDAO")
     private List<ProductoVentaDAO> productosVendidos = new ArrayList<>();
 
     public ProductoDAO() {}

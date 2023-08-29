@@ -3,6 +3,8 @@ package com.softlond.store.repositorio.mappers;
 import com.softlond.store.dominio.dto.VentaConsultaDTO;
 import com.softlond.store.repositorio.entidades.VentaDAO;
 
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,8 +20,9 @@ public class VentaMapper {
         VentaConsultaDTO ventaConsultaDTO = new VentaConsultaDTO();
         ventaConsultaDTO.setIdVenta(ventaDAO.getIdVenta());
         ventaConsultaDTO.setCedulaCliente(ventaDAO.getCliente().getCedula());
-        ventaConsultaDTO.setFecha(ventaDAO.getFecha().toLocalDate());
+        ventaConsultaDTO.setFecha(Instant.ofEpochMilli(ventaDAO.getFecha().getTime()).atZone(ZoneId.systemDefault()).toLocalDate());
         ventaConsultaDTO.setProductos(productoVentaMapper.transformarListaProductoVentaAListaProductoVentaConsultaDTO(ventaDAO.getVentasProductos()));
+        ventaConsultaDTO.setTotal(ventaDAO.getTotal());
         return ventaConsultaDTO;
     }
 

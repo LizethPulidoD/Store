@@ -11,11 +11,11 @@ public class ProductoVentaDAO {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "producto_id")
+    @JoinColumn(name = "id_producto")
     private ProductoDAO productoDAO;
 
     @ManyToOne
-    @JoinColumn(name = "venta_id")
+    @JoinColumn(name = "id_venta")
     private VentaDAO ventaDAO;
 
     @Column(name = "cantidad")
